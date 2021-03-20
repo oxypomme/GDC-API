@@ -1,4 +1,4 @@
-const { app } = require('./express');
+const { app } = require('../app');
 const { JSDOM } = require("jsdom");
 const fetch = require('node-fetch');
 
