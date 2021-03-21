@@ -3,13 +3,30 @@ const { JSDOM } = require("jsdom");
 const fetch = require('node-fetch');
 
 /**
- * @api {get} /maps/:id Request Maps Information
+ * @api {get} /gdc/maps Request Maps Information
  * @apiName GetMaps
  * @apiGroup Maps
  * @apiDescription Gets the informations about maps
  * 
  * @apiSuccess {JSONArray} result The maps infos
-
+ * @apiSuccessExample Success Example
+ * [
+ *     {
+ *         "id": 1,
+ *         "name": "Aliabad Region",
+ *         "mission_count": "26"
+ *     },
+ *     {
+ *         "id": 2,
+ *         "name": "Altis",
+ *         "mission_count": "112"
+ *     },
+ *     {
+ *         "id": 3,
+ *         "name": "Bukovina",
+ *         "mission_count": "8"
+ *     }
+ * ]
  */
 app.get('/gdc/maps', async (req, res) => {
     const { document: doc } = new JSDOM(await (await fetch(`https://grecedecanards.fr/GDCStats/maps`)).text(), {

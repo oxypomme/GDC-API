@@ -21,12 +21,13 @@ const getIntStatus = (status) => {
 }
 
 /**
- * @api {get} /missions/:id Request Missions Information
+ * @api {get} /gdc/missions/:id Request Missions Information
  * @apiName GetMissions
  * @apiGroup Missions
  * @apiDescription Gets the informations about missions
  * 
  * @apiSuccess {JSONArray} result The missions infos
+ * @apiSuccessExample Success Example
  * [
  *     {
  *         "id": "1617",
@@ -79,12 +80,13 @@ app.get('/gdc/missions', async (req, res) => {
 });
 
 /**
- * @api {get} /players/:id Request Player Information
+ * @api {get} /gdc/players/:id Request Player Information
  * @apiName GetPlayersById
  * @apiGroup Players
  * @apiDescription Gets the informations about the player
  *
  * @apiSuccess {JSONObject} result The player infos and missions
+ * @apiSuccessExample Success Example
  * {
  *     "infos": {
  *         "id": 1617,
