@@ -56,23 +56,35 @@ const getIntStatus = (status) => {
  * ]
  */
 app.get('/gdc/missions', async (req, res) => {
-    const { document: doc } = new JSDOM(await (await fetch(`https://grecedecanards.fr/GDCStats/missions`)).text(), {
-        url: `https://grecedecanards.fr/GDCStats/missions`
-    }).window;
+    const { max } = req.query;
+    let fetchOtherPages = true;
+    let page = 0;
+    let players = [];
 
-    let players;
-    const table = doc.querySelector('#page-wrapper table:first-of-type tbody');
-    if (table) {
-        players = [];
-        for (const row of table.children) {
-            players.push({
-                id: row.children[0].innerHTML,
-                name: row.children[1].children[0].innerHTML,
-                creation_date: row.children[2].innerHTML,
-                formation: row.children[3].innerHTML,
-                count_missions: row.children[4].innerHTML,
-                last_mission: row.children[5].innerHTML
-            });
+    while (fetchOtherPages) {
+        page++;
+        const { document: doc } = new JSDOM(await (await fetch(`https://grecedecanards.fr/GDCStats/${page}`)).text(), {
+            url: `https://grecedecanards.fr/GDCStats${page}`
+        }).window;
+        const table = doc.querySelector('#page-wrapper table:first-of-type tbody');
+        if (table) {
+            for (const row of table.children) {
+                players.push({
+                    id: row.children[0].innerHTML,
+                    name: row.children[1].children[0].innerHTML,
+                    creation_date: row.children[2].innerHTML,
+                    formation: row.children[3].innerHTML,
+                    count_missions: row.children[4].innerHTML,
+                    last_mission: row.children[5].innerHTML
+                });
+                if (players.length >= max) {
+                    fetchOtherPages = false;
+                    break;
+                }
+            }
+            if (table.children[table.children.length - 1].children[0].innerHTML === "1") {
+                break;
+            }
         }
     }
 
