@@ -30,27 +30,27 @@ const getIntStatus = (status) => {
  * @apiSuccessExample Success Example
  * [
  *     {
- *         "id": "1",
+ *         "id": 1,
  *         "name": "Mystery",
  *         "creation_date": "08/10/2016",
  *         "formation": "La Vieille",
- *         "count_missions": "588",
+ *         "count_missions": 588,
  *         "last_mission": "19/03/2021"
  *     },
  *     {
- *         "id": "2",
+ *         "id": 2,
  *         "name": "CP Dranac",
  *         "creation_date": "08/10/2016",
  *         "formation": "Canard",
- *         "count_missions": "486",
+ *         "count_missions": 486,
  *         "last_mission": "06/12/2020"
  *     },
  *     {
- *         "id": "3",
+ *         "id": 3,
  *         "name": "Goyahka",
  *         "creation_date": "08/10/2016",
  *         "formation": "Canard",
- *         "count_missions": "351",
+ *         "count_missions": 351,
  *         "last_mission": "12/03/2021"
  *     }
  * ]
@@ -66,11 +66,11 @@ app.get('/gdc/players', async (req, res) => {
         players = [];
         for (const row of table.children) {
             players.push({
-                id: row.children[0].innerHTML,
+                id: parseInt(row.children[0].innerHTML),
                 name: row.children[1].children[0].innerHTML,
                 creation_date: row.children[2].innerHTML,
                 formation: row.children[3].innerHTML,
-                count_missions: row.children[4].innerHTML,
+                count_missions: parseInt(row.children[4].innerHTML),
                 last_mission: row.children[5].innerHTML
             });
         }
