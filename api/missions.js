@@ -78,10 +78,10 @@ app.get('/gdc/missions', async (req, res) => {
 });
 
 /**
- * @api {get} /gdc/players/:id Request Player Information
- * @apiName GetPlayersById
+ * @api {get} /gdc/players/:id Request Mission Information
+ * @apiName GetMissionById
  * @apiGroup Players
- * @apiDescription Gets the informations about the player
+ * @apiDescription Gets the informations about the mission
  *
  * @apiSuccess {JSONObject} result The player infos and missions
  * @apiSuccessExample Success Example
