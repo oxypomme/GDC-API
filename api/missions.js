@@ -2,23 +2,7 @@ const { app } = require('../app');
 const { JSDOM } = require("jsdom");
 const fetch = require('node-fetch');
 
-/**
- * Convert a string status to a somewhat exploitable number
- * @param {string} status The string status extracted from DOM
- * @returns {number} The status' number
- */
-const getIntStatus = (status) => {
-    switch (status) {
-        case "Vivant":
-        case "SUCCES":
-            return 1;
-        case "Mort":
-        case "ECHEC":
-            return 2;
-        default:
-            return 0;
-    }
-}
+const { getIntStatus } = require('../intstatus');
 
 /**
  * @api {get} /gdc/missions/:id Request Missions Information
@@ -30,28 +14,28 @@ const getIntStatus = (status) => {
  * @apiSuccessExample Success Example
  * [
  *     {
- *         "id": "1617",
+ *         "id": 1617,
  *         "name": "CPC-CO[19]-Matinee_brumeuse-V6",
  *         "creation_date": "Podagorsk",
  *         "formation": "20/03/2021",
- *         "count_missions": "62",
- *         "last_mission": "Inconnu"
+ *         "duration": 62,
+ *         "last_mission": 0
  *     },
  *     {
- *         "id": "1616",
+ *         "id": 1616,
  *         "name": "CPC-CO[04]-Piece_de_8-v2",
  *         "creation_date": "Stratis",
  *         "formation": "20/03/2021",
- *         "count_missions": "14",
- *         "last_mission": "ECHEC"
+ *         "duration": 14,
+ *         "last_mission": 2
  *     },
  *     {
- *         "id": "1615",
+ *         "id": 1615,
  *         "name": "CPC-CO[20]-Veine_de_Cobra-v1",
  *         "creation_date": "Desert",
  *         "formation": "19/03/2021",
- *         "count_missions": "68",
- *         "last_mission": "SUCCES"
+ *         "duration": 68,
+ *         "last_mission": 1
  *     }
  * ]
  */
@@ -59,7 +43,7 @@ app.get('/gdc/missions', async (req, res) => {
     const { max } = req.query;
     let fetchOtherPages = true;
     let page = 0;
-    let players = [];
+    let missions = [];
 
     while (fetchOtherPages) {
         page++;
@@ -69,15 +53,17 @@ app.get('/gdc/missions', async (req, res) => {
         const table = doc.querySelector('#page-wrapper table:first-of-type tbody');
         if (table) {
             for (const row of table.children) {
-                players.push({
-                    id: row.children[0].innerHTML,
+                missions.push({
+                    id: parseInt(row.children[0].innerHTML),
                     name: row.children[1].children[0].innerHTML,
-                    creation_date: row.children[2].innerHTML,
-                    formation: row.children[3].innerHTML,
-                    count_missions: row.children[4].innerHTML,
-                    last_mission: row.children[5].innerHTML
+                    map: row.children[2].innerHTML,
+                    date: row.children[3].innerHTML,
+                    duration: row.children[4].innerHTML,
+                    status: getIntStatus(row.children[5].innerHTML),
+                    players: parseInt(row.children[6].innerHTML),
+                    end_players: parseInt(row.children[7].innerHTML)
                 });
-                if (players.length >= max) {
+                if (missions.length >= max) {
                     fetchOtherPages = false;
                     break;
                 }
@@ -88,7 +74,7 @@ app.get('/gdc/missions', async (req, res) => {
         }
     }
 
-    res.status(200).json(players);
+    res.status(200).json(missions);
 });
 
 /**

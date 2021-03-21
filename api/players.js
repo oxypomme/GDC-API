@@ -2,23 +2,7 @@ const { app } = require('../app');
 const { JSDOM } = require("jsdom");
 const fetch = require('node-fetch');
 
-/**
- * Convert a string status to a somewhat exploitable number
- * @param {string} status The string status extracted from DOM
- * @returns {number} The status' number
- */
-const getIntStatus = (status) => {
-    switch (status) {
-        case "Vivant":
-        case "SUCCES":
-            return 1;
-        case "Mort":
-        case "ECHEC":
-            return 2;
-        default:
-            return 0;
-    }
-}
+const { getIntStatus } = require('../intstatus');
 
 /**
  * @api {get} /gdc/players/:id Request Players Information
