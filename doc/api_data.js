@@ -32,7 +32,7 @@ define({ "api": [
   },
   {
     "type": "get",
-    "url": "/gdc/missions/:id",
+    "url": "/gdc/missions",
     "title": "Request Missions Information",
     "name": "GetMissions",
     "group": "Missions",
@@ -52,7 +52,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success Example",
-          "content": "[\n    {\n        \"id\": 1617,\n        \"name\": \"CPC-CO[19]-Matinee_brumeuse-V6\",\n        \"creation_date\": \"Podagorsk\",\n        \"formation\": \"20/03/2021\",\n        \"duration\": 62,\n        \"last_mission\": 0\n    },\n    {\n        \"id\": 1616,\n        \"name\": \"CPC-CO[04]-Piece_de_8-v2\",\n        \"creation_date\": \"Stratis\",\n        \"formation\": \"20/03/2021\",\n        \"duration\": 14,\n        \"last_mission\": 2\n    },\n    {\n        \"id\": 1615,\n        \"name\": \"CPC-CO[20]-Veine_de_Cobra-v1\",\n        \"creation_date\": \"Desert\",\n        \"formation\": \"19/03/2021\",\n        \"duration\": 68,\n        \"last_mission\": 1\n    }\n]",
+          "content": "[\n    {\n        \"id\": 1624,\n        \"name\": \"CPC-CO[07]-Un_froid_mordant-V1\",\n        \"map\": \"Thirsk Winter\",\n        \"date\": \"27/03/2021\",\n        \"duration\": \"53\",\n        \"status\": 1,\n        \"players\": 5,\n        \"end_players\": 4\n    },\n    {\n        \"id\": 1623,\n        \"name\": \"CPC-CO[12]-places_gratuites-V2\",\n        \"map\": \"Isla Duala v3.9\",\n        \"date\": \"26/03/2021\",\n        \"duration\": \"66\",\n        \"status\": 2,\n        \"players\": 12,\n        \"end_players\": 0\n    }\n]",
           "type": "json"
         }
       ]
