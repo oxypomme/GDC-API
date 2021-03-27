@@ -91,7 +91,10 @@ app.get('/gdc/players', async (req, res) => {
  * }
  */
 app.get('/gdc/players/:id', async (req, res) => {
-    const { id } = req.params;
+    let { id } = req.params;
+    if (!parseInt(id)) {
+        id = (await getAllPlayers()).players.find((p) => p.name === id).id.toString();
+    }
     const { document: doc } = new JSDOM(await (await fetch(`https://grecedecanards.fr/GDCStats/players/${id}`)).text(), {
         url: `https://grecedecanards.fr/GDCStats/players/${id}`
     }).window;
@@ -136,77 +139,4 @@ app.get('/gdc/players/:id', async (req, res) => {
         infos,
         missions
     });
-});
-
-/**
- * @api {get} /gdc/players/name/:name Request Player Id
- * @apiName GetPlayerIdByName
- * @apiGroup Players
- * @apiDescription Gets the id of the player
- * 
- * @apiSuccess {JSONObject} result The player id
- * @apiSuccessExample Success Example
- * {
- *  "id": 292
- * }
- * @apiErrorExample Error Example
- * {
- *  "id": null
- * }
- */
-app.get('/gdc/players/name/:name', async (req, res) => {
-    const { name } = req.params;
-    const { document: doc } = new JSDOM(await (await fetch(`https://grecedecanards.fr/GDCStats/players`)).text(), {
-        url: `https://grecedecanards.fr/GDCStats/players`
-    }).window;
-
-    let id = null;
-
-    const table = doc.querySelector('#page-wrapper table:first-of-type tbody');
-    if (table) {
-        for (const row of table.children) {
-            if (row.children[1].children[0].innerHTML === name) {
-                id = parseInt(row.children[0].innerHTML);
-                break;
-            }
-        }
-    }
-
-    res.status(200).json({
-        id
-    })
-});
-
-/**
- * @api {get} /gdc/players/id/:id Request Player Name
- * @apiName GetPlayerNameById
- * @apiGroup Players
- * @apiDescription Gets the name of the player
- * 
- * @apiSuccess {JSONObject} result The player name
- * @apiSuccessExample Success Example
- * {
- *  "name": 292
- * }
- * @apiErrorExample Error Example
- * {
- *  "name": null
- * }
- */
-app.get('/gdc/players/id/:id', async (req, res) => {
-    const { id } = req.params;
-    const { document: doc } = new JSDOM(await (await fetch(`https://grecedecanards.fr/GDCStats/players/${id}`)).text(), {
-        url: `https://grecedecanards.fr/GDCStats/players/${id}`
-    }).window;
-
-    let name = null;
-
-    const row = doc.querySelector('#page-wrapper table:first-of-type tbody').children[0];
-    if (row) {
-        name = row.children[0].innerHTML;
-    }
-
-    res.status(200).json({
-        name
-    })
 });
