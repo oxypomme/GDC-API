@@ -2,6 +2,8 @@ const { app } = require('../app');
 const { JSDOM } = require("jsdom");
 const fetch = require('node-fetch');
 
+const { getAllMissions } = require('../db/missions');
+
 const { getIntStatus } = require('../intstatus');
 
 /**
@@ -12,67 +14,10 @@ const { getIntStatus } = require('../intstatus');
  * 
  * @apiSuccess {JSONArray} result The missions infos
  * @apiSuccessExample Success Example
- * [
- *     {
- *         "id": 1624,
- *         "name": "CPC-CO[07]-Un_froid_mordant-V1",
- *         "map": "Thirsk Winter",
- *         "date": "27/03/2021",
- *         "duration": "53",
- *         "status": 1,
- *         "players": 5,
- *         "end_players": 4
- *     },
- *     {
- *         "id": 1623,
- *         "name": "CPC-CO[12]-places_gratuites-V2",
- *         "map": "Isla Duala v3.9",
- *         "date": "26/03/2021",
- *         "duration": "66",
- *         "status": 2,
- *         "players": 12,
- *         "end_players": 0
- *     }
- * ]
+ * TODO
  */
 app.get('/gdc/missions', async (req, res) => {
-    const { max } = req.query;
-    let fetchOtherPages = true;
-    let page = 0;
-    let missions = [];
-
-    while (fetchOtherPages) {
-        page++;
-        const { document: doc } = new JSDOM(await (await fetch(`https://grecedecanards.fr/GDCStats/${page}`)).text(), {
-            url: `https://grecedecanards.fr/GDCStats/${page}`
-        }).window;
-        const table = doc.querySelector('#page-wrapper table:first-of-type tbody');
-        if (table) {
-            for (const row of table.children) {
-                if (row.children[5].innerHTML !== "@EFFACER") {
-                    missions.push({
-                        id: parseInt(row.children[0].innerHTML),
-                        name: row.children[1].children[0].innerHTML,
-                        map: row.children[2].innerHTML,
-                        date: row.children[3].innerHTML,
-                        duration: row.children[4].innerHTML,
-                        status: getIntStatus(row.children[5].innerHTML),
-                        players: parseInt(row.children[6].innerHTML),
-                        end_players: parseInt(row.children[7].innerHTML)
-                    });
-                    if (missions.length >= max) {
-                        fetchOtherPages = false;
-                        break;
-                    }
-                }
-            }
-            if (table.children[table.children.length - 1].children[0].innerHTML === "1") {
-                break;
-            }
-        }
-    }
-
-    res.status(200).json(missions);
+    res.status(200).json(await getAllMissions());
 });
 
 /**
@@ -116,7 +61,7 @@ app.get('/gdc/missions/:id', async (req, res) => {
         url: `https://grecedecanards.fr/GDCStats/missions/${id}`
     }).window;
 
-    let players;
+    let missions;
     let infos;
 
     const mission = doc.querySelector("#page-wrapper table:first-of-type tbody").children[0];
@@ -135,10 +80,10 @@ app.get('/gdc/missions/:id', async (req, res) => {
 
     const table = doc.querySelector("#page-wrapper table:last-of-type tbody");
     if (table) {
-        players = [];
+        missions = [];
         for (const row of table.children) {
             const match = /(.*\/)(.*)/.exec(row.children[0].children[0].href);
-            players.push({
+            missions.push({
                 id: parseInt(match[match.length - 1]),
                 name: row.children[0].children[0].innerHTML,
                 role: row.children[1].innerHTML,
@@ -149,6 +94,6 @@ app.get('/gdc/missions/:id', async (req, res) => {
 
     res.status(200).json({
         infos,
-        missions: players
+        missions
     });
 })

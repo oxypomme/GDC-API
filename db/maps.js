@@ -1,36 +1,10 @@
-const { app } = require('../app');
 const { JSDOM } = require("jsdom");
 const fetch = require('node-fetch');
+const fs = require('fs');
 
 const configMaps = require('../config/maps.json');
 
-/**
- * @api {get} /gdc/maps Request Maps Information
- * @apiName GetMaps
- * @apiGroup Maps
- * @apiDescription Gets the informations about maps
- * 
- * @apiSuccess {JSONArray} result The maps infos
- * @apiSuccessExample Success Example
- * [
- *     {
- *         "id": 1,
- *         "name": "Aliabad Region",
- *         "mission_count": "26"
- *     },
- *     {
- *         "id": 2,
- *         "name": "Altis",
- *         "mission_count": "112"
- *     },
- *     {
- *         "id": 3,
- *         "name": "Bukovina",
- *         "mission_count": "8"
- *     }
- * ]
- */
-app.get('/gdc/maps', async (req, res) => {
+const fetchAllMaps = async () => {
     const { document: doc } = new JSDOM(await (await fetch(`https://grecedecanards.fr/GDCStats/maps`)).text(), {
         url: `https://grecedecanards.fr/GDCStats/maps`
     }).window;
@@ -50,5 +24,20 @@ app.get('/gdc/maps', async (req, res) => {
         }
     }
 
-    res.status(200).json(maps);
-});
+    fs.writeFileSync('db/data/maps.json', JSON.stringify({ maps, updated: new Date() }));
+};
+
+const getAllMaps = async () => {
+    try {
+        require('./data/maps.json');
+    } catch (error) {
+        await fetchAllMaps();
+    }
+    const mapsJSON = require('./data/maps.json');
+    if (new Date(mapsJSON.updated).getHours() < new Date().getHours()) {
+        await fetchAllMaps();
+    }
+    return mapsJSON;
+}
+
+exports.getAllMaps = getAllMaps;

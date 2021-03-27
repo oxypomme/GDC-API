@@ -41,10 +41,7 @@ const { getIntStatus } = require('../intstatus');
  *     }
  * ]
  */
-app.get('/gdc/players', async (req, res) => {
-    const players = await getAllPlayers();
-    res.status(200).json(players);
-});
+app.get('/gdc/players', async (req, res) => res.status(200).json(await getAllPlayers()));
 
 /**
  * @api {get} /gdc/players/:id Request Player Information
@@ -54,41 +51,7 @@ app.get('/gdc/players', async (req, res) => {
  * 
  * @apiSuccess {JSONObject} result The player infos and missions
  * @apiSuccessExample Success Example
- * {
- *  "infos": {
- *         "id": 292,
- *         "name": "OxyTom",
- *         "creation_date": "13/02/2021",
- *         "formation": "",
- *         "count_missions": 19
- *     },
- *     "missions": [
- *         {
- *             "id": 1617,
- *             "name": "CPC-CO[19]-Matinee_brumeuse-V6",
- *             "map": "Podagorsk",
- *             "date": "20/03/2021",
- *             "duration": 62,
- *             "mission_status": 0,
- *             "players": 15,
- *             "end_players": 6,
- *             "role": "Mitrailleur assistant",
- *             "player_status": 2
- *         },
- *         {
- *             "id": 1615,
- *             "name": "CPC-CO[20]-Veine_de_Cobra-v1",
- *             "map": "Desert",
- *             "date": "19/03/2021",
- *             "duration": 68,
- *             "mission_status": 1,
- *             "players": 18,
- *             "end_players": 17,
- *             "role": "Rifleman M136-AT",
- *             "player_status": 1
- *         }
- *     ]
- * }
+ * TODO
  */
 app.get('/gdc/players/:id', async (req, res) => {
     let { id } = req.params;
