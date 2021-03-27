@@ -131,19 +131,21 @@ app.get('/gdc/players/:id', async (req, res) => {
     if (table) {
         missions = [];
         for (const row of table.children) {
-            const match = /(.*\/)(.*)/.exec(row.children[0].children[0].href);
-            missions.push({
-                id: parseInt(match[match.length - 1]),
-                name: row.children[0].children[0].innerHTML,
-                map: row.children[1].innerHTML,
-                date: row.children[2].innerHTML,
-                duration: parseInt(row.children[3].innerHTML),
-                mission_status: getIntStatus(row.children[4].innerHTML),
-                players: parseInt(row.children[5].innerHTML),
-                end_players: parseInt(row.children[6].innerHTML),
-                role: row.children[7].innerHTML,
-                player_status: getIntStatus(row.children[8].innerHTML),
-            });
+            if (row.children[4].innerHTML !== "@EFFACER") {
+                const match = /(.*\/)(.*)/.exec(row.children[0].children[0].href);
+                missions.push({
+                    id: parseInt(match[match.length - 1]),
+                    name: row.children[0].children[0].innerHTML,
+                    map: row.children[1].innerHTML,
+                    date: row.children[2].innerHTML,
+                    duration: parseInt(row.children[3].innerHTML),
+                    mission_status: getIntStatus(row.children[4].innerHTML),
+                    players: parseInt(row.children[5].innerHTML),
+                    end_players: parseInt(row.children[6].innerHTML),
+                    role: row.children[7].innerHTML,
+                    player_status: getIntStatus(row.children[8].innerHTML),
+                });
+            }
         }
     }
 

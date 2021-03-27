@@ -5,7 +5,7 @@ const fetch = require('node-fetch');
 const { getIntStatus } = require('../intstatus');
 
 /**
- * @api {get} /gdc/missions/:id Request Missions Information
+ * @api {get} /gdc/missions Request Missions Information
  * @apiName GetMissions
  * @apiGroup Missions
  * @apiDescription Gets the informations about missions
@@ -14,28 +14,24 @@ const { getIntStatus } = require('../intstatus');
  * @apiSuccessExample Success Example
  * [
  *     {
- *         "id": 1617,
- *         "name": "CPC-CO[19]-Matinee_brumeuse-V6",
- *         "creation_date": "Podagorsk",
- *         "formation": "20/03/2021",
- *         "duration": 62,
- *         "last_mission": 0
+ *         "id": 1624,
+ *         "name": "CPC-CO[07]-Un_froid_mordant-V1",
+ *         "map": "Thirsk Winter",
+ *         "date": "27/03/2021",
+ *         "duration": "53",
+ *         "status": 1,
+ *         "players": 5,
+ *         "end_players": 4
  *     },
  *     {
- *         "id": 1616,
- *         "name": "CPC-CO[04]-Piece_de_8-v2",
- *         "creation_date": "Stratis",
- *         "formation": "20/03/2021",
- *         "duration": 14,
- *         "last_mission": 2
- *     },
- *     {
- *         "id": 1615,
- *         "name": "CPC-CO[20]-Veine_de_Cobra-v1",
- *         "creation_date": "Desert",
- *         "formation": "19/03/2021",
- *         "duration": 68,
- *         "last_mission": 1
+ *         "id": 1623,
+ *         "name": "CPC-CO[12]-places_gratuites-V2",
+ *         "map": "Isla Duala v3.9",
+ *         "date": "26/03/2021",
+ *         "duration": "66",
+ *         "status": 2,
+ *         "players": 12,
+ *         "end_players": 0
  *     }
  * ]
  */
@@ -48,24 +44,26 @@ app.get('/gdc/missions', async (req, res) => {
     while (fetchOtherPages) {
         page++;
         const { document: doc } = new JSDOM(await (await fetch(`https://grecedecanards.fr/GDCStats/${page}`)).text(), {
-            url: `https://grecedecanards.fr/GDCStats${page}`
+            url: `https://grecedecanards.fr/GDCStats/${page}`
         }).window;
         const table = doc.querySelector('#page-wrapper table:first-of-type tbody');
         if (table) {
             for (const row of table.children) {
-                missions.push({
-                    id: parseInt(row.children[0].innerHTML),
-                    name: row.children[1].children[0].innerHTML,
-                    map: row.children[2].innerHTML,
-                    date: row.children[3].innerHTML,
-                    duration: row.children[4].innerHTML,
-                    status: getIntStatus(row.children[5].innerHTML),
-                    players: parseInt(row.children[6].innerHTML),
-                    end_players: parseInt(row.children[7].innerHTML)
-                });
-                if (missions.length >= max) {
-                    fetchOtherPages = false;
-                    break;
+                if (row.children[5].innerHTML !== "@EFFACER") {
+                    missions.push({
+                        id: parseInt(row.children[0].innerHTML),
+                        name: row.children[1].children[0].innerHTML,
+                        map: row.children[2].innerHTML,
+                        date: row.children[3].innerHTML,
+                        duration: row.children[4].innerHTML,
+                        status: getIntStatus(row.children[5].innerHTML),
+                        players: parseInt(row.children[6].innerHTML),
+                        end_players: parseInt(row.children[7].innerHTML)
+                    });
+                    if (missions.length >= max) {
+                        fetchOtherPages = false;
+                        break;
+                    }
                 }
             }
             if (table.children[table.children.length - 1].children[0].innerHTML === "1") {
