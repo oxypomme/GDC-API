@@ -2,6 +2,8 @@ const { app } = require('../app');
 const { JSDOM } = require("jsdom");
 const fetch = require('node-fetch');
 
+const { getAllPlayers } = require('../db/players');
+
 const { getIntStatus } = require('../intstatus');
 
 /**
@@ -40,26 +42,7 @@ const { getIntStatus } = require('../intstatus');
  * ]
  */
 app.get('/gdc/players', async (req, res) => {
-    const { document: doc } = new JSDOM(await (await fetch(`https://grecedecanards.fr/GDCStats/players`)).text(), {
-        url: `https://grecedecanards.fr/GDCStats/players`
-    }).window;
-
-    let players;
-    const table = doc.querySelector('#page-wrapper table:first-of-type tbody');
-    if (table) {
-        players = [];
-        for (const row of table.children) {
-            players.push({
-                id: parseInt(row.children[0].innerHTML),
-                name: row.children[1].children[0].innerHTML,
-                creation_date: row.children[2].innerHTML,
-                formation: row.children[3].innerHTML,
-                count_missions: parseInt(row.children[4].innerHTML),
-                last_mission: row.children[5].innerHTML
-            });
-        }
-    }
-
+    const players = await getAllPlayers();
     res.status(200).json(players);
 });
 

@@ -117,3 +117,5 @@ dist
 
 .vscode/
 *.secret.*
+
+db/data/*.json
