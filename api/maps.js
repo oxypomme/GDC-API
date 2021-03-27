@@ -42,7 +42,7 @@ app.get('/gdc/maps', async (req, res) => {
             maps.push({
                 id,
                 name: row.children[0].innerHTML,
-                mission_count: row.children[1].innerHTML,
+                mission_count: parseInt(row.children[1].innerHTML),
             });
         }
     }
