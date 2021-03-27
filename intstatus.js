@@ -1,3 +1,5 @@
+const labelStatus = [["Vivant", "SUCCES"], ["Mort", "ECHEC"], ["Inconnu", "PVP"]];
+
 /**
  * Convert a string status to a somewhat exploitable number
  * @param {string} status The string status extracted from DOM
@@ -5,13 +7,13 @@
  */
 const getIntStatus = (status) => {
     switch (status) {
-        case "Vivant":
-        case "SUCCES":
+        case labelStatus[0][0]:
+        case labelStatus[0][1]:
             return 1;
-        case "Mort":
-        case "ECHEC":
+        case labelStatus[1][0]:
+        case labelStatus[1][1]:
             return 2;
-        case "PVP":
+        case labelStatus[2][1]:
             return 3;
         default:
             return 0;
@@ -19,3 +21,4 @@ const getIntStatus = (status) => {
 }
 
 exports.getIntStatus = getIntStatus;
+exports.labelStatus = labelStatus;

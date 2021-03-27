@@ -1,0 +1,186 @@
+{
+    "Game Master": [
+        "Game Master",
+        "GM"
+    ],
+    "Squad Leader": [
+        "Squad Leader",
+        "Chef d'escouade",
+        "Chef d''escouade",
+        "Chef d'équipe",
+        "SL",
+        "Sergent",
+        "Second"
+    ],
+    "Team Leader": [
+        "Team Leader",
+        "TL",
+        "Chef de groupe",
+        "Caporal"
+    ],
+    "Leader": [
+        "Commandant",
+        "Chef d'opération",
+        "Leader",
+        "Officier",
+        "Officer",
+        "Sergeant",
+        "Capitaine",
+        "Captain",
+        "Chef de mission",
+        "Chef de section",
+        "Bras droit",
+        "Chef",
+        "Commander",
+        "Lieutenant",
+        "Colonel"
+    ],
+    "Assistant AT": [
+        "Assistant AT",
+        "Assistant RPG",
+        "Asst. RPG"
+    ],
+    "Anti Tank": [
+        "AT",
+        "M136",
+        "M72",
+        "RPG",
+        "SMAW",
+        "Antitank"
+    ],
+    "Assistant AA": [
+        "Assistant AA"
+    ],
+    "Anti Air": [
+        "AA",
+        "Javelin"
+    ],
+    "JTAC": [
+        "JTAC",
+        "Radio"
+    ],
+    "Medecin": [
+        "Medecin",
+        "Medic",
+        "Infirmier",
+        "Vétérinaire",
+        "Doc",
+        "Corpsman",
+        "Secouriste",
+        "Ambulancier"
+    ],
+    "Sapeur": [
+        "Sapeur",
+        "Sappeur",
+        "Sapper",
+        "Explosif",
+        "Explosive",
+        "Expert Démo-Déminage",
+        "Explo",
+        "Démo",
+        "EOD",
+        "Démineur",
+        "Déminage",
+        "Expert IED",
+        "Engineer",
+        "Ingénieur",
+        "Saboteur"
+    ],
+    "Mule": [
+        "Mule",
+        "Porteur de munitions",
+        "Porteur Mun",
+        "Préposé munitions",
+        "Préposé aux munitions"
+    ],
+    "Grenadier": [
+        "Grenadier"
+    ],
+    "Sniper": [
+        "Sniper"
+    ],
+    "Tireur d'élite": [
+        "Tireur d'élite"
+    ],
+    "Marksman": [
+        "Marksman",
+        "Tireur de précision"
+    ],
+    "Spotter": [
+        "Spotter",
+        "Eclaireur",
+        "Recon",
+        "Scout"
+    ],
+    "Assistant MG": [
+        "Assistant MG",
+        "Mitrailleur assistant"
+    ],
+    "Machine Gunner": [
+        "Machine Gunner",
+        "Machinegunner",
+        "Machine_Gunner",
+        "MG",
+        "Mitrailleur"
+    ],
+    "Assistant AR": [
+        "Asst AR",
+        "Asst. AR",
+        "Assitant AR",
+        "Assistant AR",
+        "Assitant fusilier arme auto",
+        "Asst. fusilier arme auto"
+    ],
+    "Fusilier auto": [
+        "Fusilier auto",
+        "Fusilier arme auto",
+        "Auto-rifleman",
+        "AR"
+    ],
+    "Pilote": [
+        "Pilote",
+        "Pilot"
+    ],
+    "Membre d'équipage": [
+        "Membre d'équipage",
+        "Equipage",
+        "Gunner",
+        "Conducteur",
+        "Tireur",
+        "Chef de bord",
+        "Crew",
+        "Driver"
+    ],
+    "Breacher": [
+        "Breacher"
+    ],
+    "Bouclier": [
+        "Bouclier"
+    ],
+    "Plongeur": [
+        "Plongeur",
+        "Diver"
+    ],
+    "Fusilier": [
+        "Fusilier",
+        "Fusillier",
+        "Fusiller",
+        "Fusiler",
+        "Rifleman",
+        "Riffleman",
+        "Opérateur",
+        "Partisan",
+        "Gendarme",
+        "Volontaire",
+        "Milicien",
+        "Rebelle",
+        "Assaultman",
+        "Fantassin",
+        "Rfl",
+        "Fireman",
+        "Fighter",
+        "BLUFOR",
+        "OPFOR",
+        "Indépendant"
+    ]
+}

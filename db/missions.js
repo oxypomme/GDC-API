@@ -1,5 +1,6 @@
 const { JSDOM } = require("jsdom");
 const fetch = require('node-fetch');
+const fs = require('fs');
 
 const { getIntStatus } = require('../intstatus');
 
@@ -49,4 +50,73 @@ const getAllMissions = async () => {
     return missionsJSON;
 }
 
+const fetchMission = async (id) => {
+    const { document: doc } = new JSDOM(await (await fetch(`https://grecedecanards.fr/GDCStats/missions/${id}`)).text(), {
+        url: `https://grecedecanards.fr/GDCStats/missions/${id}`
+    }).window;
+
+    let players;
+    let infos;
+
+    const mission = doc.querySelector("#page-wrapper table:first-of-type tbody").children[0];
+    if (mission) {
+        infos = {
+            id: parseInt(id),
+            name: mission.children[1].children[0].innerHTML,
+            map: mission.children[2].innerHTML,
+            date: mission.children[3].innerHTML,
+            duration: mission.children[4].innerHTML,
+            status: getIntStatus(mission.children[5].innerHTML),
+            players: parseInt(mission.children[6].innerHTML),
+            end_players: parseInt(mission.children[7].innerHTML)
+        };
+    }
+
+    const table = doc.querySelector("#page-wrapper table:last-of-type tbody");
+    if (table) {
+        players = [];
+        for (const row of table.children) {
+            const match = /(.*\/)(.*)/.exec(row.children[0].children[0].href);
+            players.push({
+                id: parseInt(match[match.length - 1]),
+                name: row.children[0].children[0].innerHTML,
+                role: row.children[1].innerHTML,
+                status: row.children[2].innerHTML
+            });
+        }
+    }
+    const res = {
+        infos,
+        players,
+        updated: new Date()
+    };
+    try {
+        const playerJSON = require('./data/mission.json');
+        fs.writeFileSync('db/data/mission.json', JSON.stringify({
+            ...playerJSON,
+            [id]: res
+        }));
+    } catch (error) {
+        fs.writeFileSync('db/data/mission.json', JSON.stringify({
+            [id]: res
+        }));
+    }
+    return res;
+}
+
+const getMission = async (id) => {
+    let mission = {};
+    try {
+        const missionJSON = require('./data/mission.json');
+        mission = missionJSON[id];
+        if (!mission || new Date(mission.updated).getHours() < new Date().getHours()) {
+            mission = await fetchMission(id);
+        }
+    } catch (error) {
+        mission = await fetchMission(id);
+    }
+    return mission;
+}
+
 exports.getAllMissions = getAllMissions;
+exports.getMission = getMission;

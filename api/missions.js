@@ -2,7 +2,7 @@ const { app } = require('../app');
 const { JSDOM } = require("jsdom");
 const fetch = require('node-fetch');
 
-const { getAllMissions } = require('../db/missions');
+const { getAllMissions, getMission } = require('../db/missions');
 
 const { getIntStatus } = require('../intstatus');
 
@@ -14,16 +14,40 @@ const { getIntStatus } = require('../intstatus');
  * 
  * @apiSuccess {JSONArray} result The missions infos
  * @apiSuccessExample Success Example
- * TODO
+ * {
+ *     "missions": [
+ *         {
+ *             "id": 1625,
+ *             "name": "CPC-CO[16]-Shapurville-V4",
+ *             "map": "Shapur",
+ *             "date": "27/03/2021",
+ *             "duration": "63",
+ *             "status": 0,
+ *             "players": 14,
+ *             "end_players": 1
+ *         },
+ *         {
+ *             "id": 1624,
+ *             "name": "CPC-CO[07]-Un_froid_mordant-V1",
+ *             "map": "Thirsk Winter",
+ *             "date": "27/03/2021",
+ *             "duration": "53",
+ *             "status": 1,
+ *             "players": 5,
+ *             "end_players": 4
+ *         }
+ *     ],
+ *     "updated": "2021-03-27T23:03:25.488Z"
+ * }
  */
 app.get('/gdc/missions', async (req, res) => {
     res.status(200).json(await getAllMissions());
 });
 
 /**
- * @api {get} /gdc/players/:id Request Mission Information
+ * @api {get} /gdc/missions/:id Request Mission Information
  * @apiName GetMissionById
- * @apiGroup Players
+ * @apiGroup Missions
  * @apiDescription Gets the informations about the mission
  *
  * @apiSuccess {JSONObject} result The player infos and missions
@@ -52,48 +76,11 @@ app.get('/gdc/missions', async (req, res) => {
  *             "role": "Infirmier",
  *             "status": "Mort"
  *         }
- *     ]
+ *     ],
+ *     "updated": "2021-03-27T23:03:25.488Z"
  * }
  */
 app.get('/gdc/missions/:id', async (req, res) => {
     const { id } = req.params;
-    const { document: doc } = new JSDOM(await (await fetch(`https://grecedecanards.fr/GDCStats/missions/${id}`)).text(), {
-        url: `https://grecedecanards.fr/GDCStats/missions/${id}`
-    }).window;
-
-    let missions;
-    let infos;
-
-    const mission = doc.querySelector("#page-wrapper table:first-of-type tbody").children[0];
-    if (mission) {
-        infos = {
-            id: parseInt(id),
-            name: mission.children[1].children[0].innerHTML,
-            map: mission.children[2].innerHTML,
-            date: mission.children[3].innerHTML,
-            duration: mission.children[4].innerHTML,
-            status: getIntStatus(mission.children[5].innerHTML),
-            players: parseInt(mission.children[6].innerHTML),
-            end_players: parseInt(mission.children[7].innerHTML)
-        };
-    }
-
-    const table = doc.querySelector("#page-wrapper table:last-of-type tbody");
-    if (table) {
-        missions = [];
-        for (const row of table.children) {
-            const match = /(.*\/)(.*)/.exec(row.children[0].children[0].href);
-            missions.push({
-                id: parseInt(match[match.length - 1]),
-                name: row.children[0].children[0].innerHTML,
-                role: row.children[1].innerHTML,
-                status: row.children[2].innerHTML
-            });
-        }
-    }
-
-    res.status(200).json({
-        infos,
-        missions
-    });
+    res.status(200).json(await getMission(id));
 })
