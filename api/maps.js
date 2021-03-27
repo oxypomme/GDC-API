@@ -2,6 +2,8 @@ const { app } = require('../app');
 const { JSDOM } = require("jsdom");
 const fetch = require('node-fetch');
 
+const configMaps = require('../config/maps.json');
+
 /**
  * @api {get} /gdc/maps Request Maps Information
  * @apiName GetMaps
@@ -37,13 +39,14 @@ app.get('/gdc/maps', async (req, res) => {
     const table = doc.querySelector('#page-wrapper table:first-of-type tbody');
     if (table) {
         maps = [];
-        for (let id = 1; id < table.children.length; id++) {
+        for (let id = 1; id < table.children.length + 1; id++) {
             const row = table.children[id - 1];
-            maps.push({
-                id,
-                name: row.children[0].innerHTML,
-                mission_count: parseInt(row.children[1].innerHTML),
-            });
+            if (configMaps.includes(row.children[0].innerHTML))
+                maps.push({
+                    id,
+                    name: row.children[0].innerHTML,
+                    mission_count: parseInt(row.children[1].innerHTML),
+                });
         }
     }
 
