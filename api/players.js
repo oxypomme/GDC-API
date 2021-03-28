@@ -151,10 +151,10 @@ app.get('/gdc/players/:id', async (req, res) => {
                 days[date].count++;
                 // Player Status
                 for (let i = 0; i < 3; i++) {
-                    days[date][labelStatus[i][0]] += miss.player_status === i ? 1 : 0;
+                    days[date][labelStatus[i][0]] += miss.player_status + 1 === i + 1 ? 1 : 0;
                 }
                 // Mission Status
-                for (let i = 0; i < 3; i++) {
+                for (let i = 0; i <= 3; i++) {
                     days[date][labelStatus[i][1]] += miss.mission_status === i ? 1 : 0;
                 }
             } else {
@@ -164,7 +164,7 @@ app.get('/gdc/players/:id', async (req, res) => {
                     days[date][labelStatus[i][0]] = miss.player_status === i ? 1 : 0;
                 }
                 // Mission Status
-                for (let i = 0; i < 3; i++) {
+                for (let i = 0; i <= 3; i++) {
                     days[date][labelStatus[i][1]] = miss.mission_status === i ? 1 : 0;
                 }
             }
