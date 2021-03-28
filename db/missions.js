@@ -44,7 +44,7 @@ const getAllMissions = async () => {
         await fetchAllMissions();
     }
     const missionsJSON = require('./data/missions.json');
-    if (new Date(missionsJSON.updated).getHours() < new Date().getHours()) {
+    if (new Date(new Date() - new Date(missionsJSON.updated)).getHours() >= 1) {
         await fetchAllMissions();
     }
     return missionsJSON;
@@ -109,7 +109,7 @@ const getMission = async (id) => {
     try {
         const missionJSON = require('./data/mission.json');
         mission = missionJSON[id];
-        if (!mission || new Date(mission.updated).getHours() < new Date().getHours()) {
+        if (!mission || new Date(new Date() - new Date(player.updated)).getHours() >= 1) {
             mission = await fetchMission(id);
         }
     } catch (error) {

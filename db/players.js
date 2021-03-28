@@ -33,7 +33,7 @@ const getAllPlayers = async () => {
         await fetchAllPlayers();
     }
     const playersJSON = require('./data/players.json');
-    if (new Date(playersJSON.updated).getHours() < new Date().getHours()) {
+    if (new Date(new Date() - new Date(playersJSON.updated)).getHours() >= 1) {
         await fetchAllPlayers();
     }
     return playersJSON;
@@ -106,7 +106,7 @@ const getPlayer = async (id) => {
     try {
         const playerJSON = require('./data/player.json');
         player = playerJSON[id];
-        if (!player || new Date(player.updated).getHours() < new Date().getHours()) {
+        if (!player || new Date(new Date() - new Date(player.updated)).getHours() > 1) {
             player = await fetchPlayer(id);
         }
     } catch (error) {

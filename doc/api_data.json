@@ -94,7 +94,7 @@
   },
   {
     "type": "get",
-    "url": "/gdc/players/:id",
+    "url": "/gdc/players",
     "title": "Request Players Information",
     "name": "GetPlayers",
     "group": "Players",
@@ -114,7 +114,7 @@
       "examples": [
         {
           "title": "Success Example",
-          "content": "[\n    {\n        \"id\": 1,\n        \"name\": \"Mystery\",\n        \"creation_date\": \"08/10/2016\",\n        \"formation\": \"La Vieille\",\n        \"count_missions\": 588,\n        \"last_mission\": \"19/03/2021\"\n    },\n    {\n        \"id\": 2,\n        \"name\": \"CP Dranac\",\n        \"creation_date\": \"08/10/2016\",\n        \"formation\": \"Canard\",\n        \"count_missions\": 486,\n        \"last_mission\": \"06/12/2020\"\n    },\n    {\n        \"id\": 3,\n        \"name\": \"Goyahka\",\n        \"creation_date\": \"08/10/2016\",\n        \"formation\": \"Canard\",\n        \"count_missions\": 351,\n        \"last_mission\": \"12/03/2021\"\n    }\n]",
+          "content": "{\n     [\n         {\n             \"id\": 1,\n             \"name\": \"Mystery\",\n             \"creation_date\": \"08/10/2016\",\n             \"formation\": \"La Vieille\",\n             \"count_missions\": 588,\n             \"last_mission\": \"19/03/2021\"\n         },\n         {\n             \"id\": 2,\n             \"name\": \"CP Dranac\",\n             \"creation_date\": \"08/10/2016\",\n             \"formation\": \"Canard\",\n             \"count_missions\": 486,\n             \"last_mission\": \"06/12/2020\"\n         },\n         {\n             \"id\": 3,\n             \"name\": \"Goyahka\",\n             \"creation_date\": \"08/10/2016\",\n             \"formation\": \"Canard\",\n             \"count_missions\": 351,\n             \"last_mission\": \"12/03/2021\"\n         }\n     ],\n     \"updated\": \"2021-03-27T22:09:45.170Z\"\n}",
           "type": "json"
         }
       ]

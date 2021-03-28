@@ -13,39 +13,42 @@ const { labelStatus } = require('../intstatus');
 const toLowerWOAccent = (str) => str.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
 
 /**
- * @api {get} /gdc/players/:id Request Players Information
+ * @api {get} /gdc/players Request Players Information
  * @apiName GetPlayers
  * @apiGroup Players
  * @apiDescription Gets the informations about players
  * 
  * @apiSuccess {JSONArray} result The players infos
  * @apiSuccessExample Success Example
- * [
- *     {
- *         "id": 1,
- *         "name": "Mystery",
- *         "creation_date": "08/10/2016",
- *         "formation": "La Vieille",
- *         "count_missions": 588,
- *         "last_mission": "19/03/2021"
- *     },
- *     {
- *         "id": 2,
- *         "name": "CP Dranac",
- *         "creation_date": "08/10/2016",
- *         "formation": "Canard",
- *         "count_missions": 486,
- *         "last_mission": "06/12/2020"
- *     },
- *     {
- *         "id": 3,
- *         "name": "Goyahka",
- *         "creation_date": "08/10/2016",
- *         "formation": "Canard",
- *         "count_missions": 351,
- *         "last_mission": "12/03/2021"
- *     }
- * ]
+ * {
+ *      [
+ *          {
+ *              "id": 1,
+ *              "name": "Mystery",
+ *              "creation_date": "08/10/2016",
+ *              "formation": "La Vieille",
+ *              "count_missions": 588,
+ *              "last_mission": "19/03/2021"
+ *          },
+ *          {
+ *              "id": 2,
+ *              "name": "CP Dranac",
+ *              "creation_date": "08/10/2016",
+ *              "formation": "Canard",
+ *              "count_missions": 486,
+ *              "last_mission": "06/12/2020"
+ *          },
+ *          {
+ *              "id": 3,
+ *              "name": "Goyahka",
+ *              "creation_date": "08/10/2016",
+ *              "formation": "Canard",
+ *              "count_missions": 351,
+ *              "last_mission": "12/03/2021"
+ *          }
+ *      ],
+ *      "updated": "2021-03-27T22:09:45.170Z"
+ * }
  */
 app.get('/gdc/players', async (req, res) => res.status(200).json(await getAllPlayers()));
 

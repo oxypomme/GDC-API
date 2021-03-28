@@ -34,7 +34,7 @@ const getAllMaps = async () => {
         await fetchAllMaps();
     }
     const mapsJSON = require('./data/maps.json');
-    if (new Date(mapsJSON.updated).getHours() < new Date().getHours()) {
+    if (new Date(new Date() - new Date(mapsJSON.updated)).getHours() >= 1) {
         await fetchAllMaps();
     }
     return mapsJSON;
