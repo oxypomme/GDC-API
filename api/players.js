@@ -102,12 +102,12 @@ app.get('/gdc/players', async (req, res) => res.status(200).json(await getAllPla
  *     "days": {
  *         "3": {
  *             "count": 5,
- *             "Vivant": 4,
- *             "Mort": 5,
- *             "Inconnu": 4,
+ *             "Vivant": 3,
+ *             "Mort": 2,
+ *             "Inconnu": 0,
  *             "SUCCES": 4,
- *             "ECHEC": 5,
- *             "PVP": 4
+ *             "ECHEC": 1,
+ *             "PVP": 0
  *         }
  *     },
  *     "updated": "2021-03-27T22:09:45.170Z"
@@ -151,11 +151,11 @@ app.get('/gdc/players/:id', async (req, res) => {
                 days[date].count++;
                 // Player Status
                 for (let i = 0; i < 3; i++) {
-                    days[date][labelStatus[i][0]]++;
+                    days[date][labelStatus[i][0]] += miss.player_status === i ? 1 : 0;
                 }
                 // Mission Status
                 for (let i = 0; i < 3; i++) {
-                    days[date][labelStatus[i][1]]++;
+                    days[date][labelStatus[i][1]] += miss.mission_status === i ? 1 : 0;
                 }
             } else {
                 days[date] = { count: 1 };
@@ -165,7 +165,7 @@ app.get('/gdc/players/:id', async (req, res) => {
                 }
                 // Mission Status
                 for (let i = 0; i < 3; i++) {
-                    days[date][labelStatus[i][1]] = miss.player_status === i ? 1 : 0;
+                    days[date][labelStatus[i][1]] = miss.mission_status === i ? 1 : 0;
                 }
             }
         }
