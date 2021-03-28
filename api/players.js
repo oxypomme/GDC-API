@@ -121,11 +121,11 @@ app.get('/gdc/players/:id', async (req, res) => {
     const total_player_status = {};
     const total_mission_status = {};
     const total_player_mission_status = {};
-    for (let j = 1; j <= 3; j++) {
-        total_mission_status[labelStatus[j - 1][1]] = player.missions.filter(m => m.mission_status === j).length;
-        for (let i = 1; i < 3; i++) {
-            total_player_status[labelStatus[i - 1][0]] = player.missions.filter(m => m.player_status === i).length;
-            total_player_mission_status[`${labelStatus[j - 1][1]}_${labelStatus[i - 1][0]}`] = player.missions.filter(m => m.player_status === i && m.mission_status === j).length;
+    for (let j = 0; j <= 3; j++) {
+        total_mission_status[labelStatus[j][1]] = player.missions.filter(m => m.mission_status === j).length;
+        for (let i = 0; i < 3; i++) {
+            total_player_status[labelStatus[i][0]] = player.missions.filter(m => m.player_status === i).length;
+            total_player_mission_status[`${labelStatus[j][1]}_${labelStatus[i][0]}`] = player.missions.filter(m => m.player_status === i && m.mission_status === j).length;
         }
     }
 

@@ -1,4 +1,4 @@
-const labelStatus = [["PInconnu", "MInconnu"], ["Vivant", "SUCCES"], ["Mort", "ECHEC"], ["", "PVP"]];
+const labelStatus = [["Inconnu", "INCONNU"], ["Vivant", "SUCCES"], ["Mort", "ECHEC"], ["", "PVP"]];
 
 /**
  * Convert a string status to a somewhat exploitable number
