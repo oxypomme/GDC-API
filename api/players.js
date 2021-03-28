@@ -1,7 +1,9 @@
 const { app } = require('../app');
 const dayjs = require('dayjs');
 const customParseFormat = require('dayjs/plugin/customParseFormat');
+require('dayjs/locale/fr');
 dayjs.extend(customParseFormat);
+dayjs.locale('fr');
 
 const roles = require('../config/roles');
 
