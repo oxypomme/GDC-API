@@ -1,6 +1,6 @@
 {
   "name": "gdc-api",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "An API for www.grecedecanards.fr",
   "apidoc": {
     "name": "DevMobAPI",

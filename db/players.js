@@ -63,7 +63,7 @@ const fetchPlayer = async (id) => {
     if (table) {
         missions = [];
         for (const row of table.children) {
-            if (!row.children[4].innerHTML.contains("EFFACER")) {
+            if (!row.children[4].innerHTML.includes("EFFACER")) {
                 const match = /(.*\/)(.*)/.exec(row.children[0].children[0].href);
                 missions.push({
                     id: parseInt(match[match.length - 1]),
