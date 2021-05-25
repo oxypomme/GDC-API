@@ -33,7 +33,7 @@ const getAllPlayers = async () => {
         await fetchAllPlayers();
     }
     const playersJSON = require('./data/players.json');
-    if (new Date(new Date() - new Date(playersJSON.updated)).getHours() >= 1) {
+    if (dayjs().isAfter(dayjs(playersJSON.updated).add(1, "h"))) {
         await fetchAllPlayers();
     }
     return playersJSON;
@@ -62,7 +62,7 @@ const fetchPlayer = async (id) => {
     if (table) {
         missions = [];
         for (const row of table.children) {
-            if (row.children[4].innerHTML !== "@EFFACER") {
+            if (!row.children[4].innerHTML.contains("EFFACER")) {
                 const match = /(.*\/)(.*)/.exec(row.children[0].children[0].href);
                 missions.push({
                     id: parseInt(match[match.length - 1]),
@@ -106,7 +106,7 @@ const getPlayer = async (id) => {
     try {
         const playerJSON = require('./data/player.json');
         player = playerJSON[id];
-        if (!player || new Date(new Date() - new Date(player.updated)).getHours() > 1) {
+        if (!player || dayjs().isAfter(dayjs(player.updated).add(1, 'h'))) {
             player = await fetchPlayer(id);
         }
     } catch (error) {

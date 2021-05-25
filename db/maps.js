@@ -34,7 +34,7 @@ const getAllMaps = async () => {
         await fetchAllMaps();
     }
     const mapsJSON = require('./data/maps.json');
-    if (new Date(new Date() - new Date(mapsJSON.updated)).getHours() >= 1) {
+    if (dayjs().isAfter(dayjs(mapsJSON.updated).add(1, 'h'))) {
         await fetchAllMaps();
     }
     return mapsJSON;
