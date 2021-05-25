@@ -1,9 +1,9 @@
 const { JSDOM } = require("jsdom");
 const fetch = require("node-fetch");
 const fs = require("fs");
+const dayjs = require("dayjs");
 
 const { getIntStatus } = require("../intstatus");
-const dayjs = require("dayjs");
 
 const fetchAllMissions = async () => {
   let page = 0;
