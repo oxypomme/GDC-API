@@ -1,9 +1,9 @@
 {
   "name": "gdc-api",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "An API for www.grecedecanards.fr",
   "apidoc": {
-    "name": "DevMobAPI",
+    "name": "GDCAPI",
     "url": "https://oxypomme.fr:8080",
     "template": {
       "withCompare": false
