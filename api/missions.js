@@ -1,17 +1,17 @@
-const { app } = require('../app');
+const { app } = require("../app");
 const { JSDOM } = require("jsdom");
-const fetch = require('node-fetch');
+const fetch = require("node-fetch");
 
-const { getAllMissions, getMission } = require('../db/missions');
+const { getAllMissions, getMission } = require("../db/missions");
 
-const { getIntStatus } = require('../intstatus');
+const { getIntStatus } = require("../intstatus");
 
 /**
  * @api {get} /gdc/missions Request Missions Information
  * @apiName GetMissions
  * @apiGroup Missions
  * @apiDescription Gets the informations about missions
- * 
+ *
  * @apiSuccess {JSONArray} result The missions infos
  * @apiSuccessExample Success Example
  * {
@@ -40,8 +40,8 @@ const { getIntStatus } = require('../intstatus');
  *     "updated": "2021-03-27T23:03:25.488Z"
  * }
  */
-app.get('/gdc/missions', async (req, res) => {
-    res.status(200).json(await getAllMissions());
+app.get("/missions", async (req, res) => {
+	res.status(200).json(await getAllMissions());
 });
 
 /**
@@ -80,7 +80,7 @@ app.get('/gdc/missions', async (req, res) => {
  *     "updated": "2021-03-27T23:03:25.488Z"
  * }
  */
-app.get('/gdc/missions/:id', async (req, res) => {
-    const { id } = req.params;
-    res.status(200).json(await getMission(id));
-})
+app.get("/missions/:id", async (req, res) => {
+	const { id } = req.params;
+	res.status(200).json(await getMission(id));
+});

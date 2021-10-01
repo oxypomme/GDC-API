@@ -1,23 +1,28 @@
-const { app } = require('../app');
-const dayjs = require('dayjs');
-const customParseFormat = require('dayjs/plugin/customParseFormat');
-require('dayjs/locale/fr');
+const { app } = require("../app");
+const dayjs = require("dayjs");
+const customParseFormat = require("dayjs/plugin/customParseFormat");
+require("dayjs/locale/fr");
 dayjs.extend(customParseFormat);
-dayjs.locale('fr');
+dayjs.locale("fr");
 
-const roles = require('../config/roles');
+const roles = require("../config/roles");
 
-const { getAllPlayers, getPlayer } = require('../db/players');
-const { labelStatus } = require('../intstatus');
+const { getAllPlayers, getPlayer } = require("../db/players");
+const { labelStatus } = require("../intstatus");
 
-const toLowerWOAccent = (str) => str.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+const toLowerWOAccent = (str) =>
+	str
+		.toLowerCase()
+		.trim()
+		.normalize("NFD")
+		.replace(/[\u0300-\u036f]/g, "");
 
 /**
  * @api {get} /gdc/players Request Players Information
  * @apiName GetPlayers
  * @apiGroup Players
  * @apiDescription Gets the informations about players
- * 
+ *
  * @apiSuccess {JSONArray} result The players infos
  * @apiSuccessExample Success Example
  * {
@@ -50,14 +55,16 @@ const toLowerWOAccent = (str) => str.toLowerCase().trim().normalize('NFD').repla
  *      "updated": "2021-03-27T22:09:45.170Z"
  * }
  */
-app.get('/gdc/players', async (req, res) => res.status(200).json(await getAllPlayers()));
+app.get("/players", async (req, res) =>
+	res.status(200).json(await getAllPlayers())
+);
 
 /**
  * @api {get} /gdc/players/:id Request Player Information
  * @apiName GetPlayersById
  * @apiGroup Players
  * @apiDescription Gets the informations about the player
- * 
+ *
  * @apiSuccess {JSONObject} result The player infos and missions
  * @apiSuccessExample Success Example
  * {
@@ -113,101 +120,113 @@ app.get('/gdc/players', async (req, res) => res.status(200).json(await getAllPla
  *     "updated": "2021-03-27T22:09:45.170Z"
  * }
  */
-app.get('/gdc/players/:id', async (req, res) => {
-    const { id } = req.params;
-    const player = await getPlayer(id);
+app.get("/players/:id", async (req, res) => {
+	const { id } = req.params;
+	const player = await getPlayer(id);
 
-    // Gets totals
-    const total_player_status = {};
-    const total_mission_status = {};
-    const total_player_mission_status = {};
-    for (let j = 0; j <= 3; j++) {
-        total_mission_status[labelStatus[j][1]] = player.missions.filter(m => m.mission_status === j).length;
-        for (let i = 0; i < 3; i++) {
-            total_player_status[labelStatus[i][0]] = player.missions.filter(m => m.player_status === i).length;
-            total_player_mission_status[`${labelStatus[j][1]}_${labelStatus[i][0]}`] = player.missions.filter(m => m.player_status === i && m.mission_status === j).length;
-        }
-    }
+	// Gets totals
+	const total_player_status = {};
+	const total_mission_status = {};
+	const total_player_mission_status = {};
+	for (let j = 0; j <= 3; j++) {
+		total_mission_status[labelStatus[j][1]] = player.missions.filter(
+			(m) => m.mission_status === j
+		).length;
+		for (let i = 0; i < 3; i++) {
+			total_player_status[labelStatus[i][0]] = player.missions.filter(
+				(m) => m.player_status === i
+			).length;
+			total_player_mission_status[`${labelStatus[j][1]}_${labelStatus[i][0]}`] =
+				player.missions.filter(
+					(m) => m.player_status === i && m.mission_status === j
+				).length;
+		}
+	}
 
-    // Gets Roles + MonthStats
-    const rolesErrors = new Array(0);
-    const rolesCount = { Inconnu: player.missions.length };
-    const months = {};
-    const days = {};
-    for (const miss of player.missions) {
-        {// Month
-            const date = dayjs(miss.date, 'DD/MM/YYYY');
-            const dateKey = date.format('MMM YYYY');
-            if (months[dateKey]) {
-                months[dateKey]++;
-            } else {
-                months[dateKey] = 1;
-            }
-        }
-        {// Day
-            const rawdate = dayjs(miss.date, 'DD/MM/YYYY').day();
-            const date = rawdate == 0 ? 7 : rawdate; // Sunday is the last day of the week. Change my mind.
-            if (days[date]) {
-                days[date].count++;
-                // Player Status
-                for (let i = 0; i < 3; i++) {
-                    days[date][labelStatus[i][0]] += miss.player_status + 1 === i + 1 ? 1 : 0;
-                }
-                // Mission Status
-                for (let i = 0; i <= 3; i++) {
-                    days[date][labelStatus[i][1]] += miss.mission_status === i ? 1 : 0;
-                }
-            } else {
-                days[date] = { count: 1 };
-                // Player Status
-                for (let i = 0; i < 3; i++) {
-                    days[date][labelStatus[i][0]] = miss.player_status === i ? 1 : 0;
-                }
-                // Mission Status
-                for (let i = 0; i <= 3; i++) {
-                    days[date][labelStatus[i][1]] = miss.mission_status === i ? 1 : 0;
-                }
-            }
-        }
-        {// Roles
-            let isMissionDone = false;
-            for (let i = 0; i < Object.values(roles).length; i++) {
-                const roleConfigKey = Object.keys(roles)[i];
-                for (const roleConfigVal of Object.values(roles)[i].map(roleConfigVal => toLowerWOAccent(roleConfigVal))) {
-                    if (toLowerWOAccent(miss.role).includes(roleConfigVal)) {
-                        isMissionDone = true;
-                        if (isNaN(rolesCount[roleConfigKey])) {
-                            rolesCount[roleConfigKey] = 1;
-                        }
-                        else {
-                            rolesCount[roleConfigKey]++;
-                        }
-                        rolesCount.Inconnu--;
-                        break;
-                    }
-                }
-                if (isMissionDone) {
-                    break;
-                }
-            }
-            if (!isMissionDone) {
-                rolesErrors.push({ mission: miss.id, role: miss.role });
-            }
-        }
-    }
+	// Gets Roles + MonthStats
+	const rolesErrors = new Array(0);
+	const rolesCount = { Inconnu: player.missions.length };
+	const months = {};
+	const days = {};
+	for (const miss of player.missions) {
+		{
+			// Month
+			const date = dayjs(miss.date, "DD/MM/YYYY");
+			const dateKey = date.format("MMM YYYY");
+			if (months[dateKey]) {
+				months[dateKey]++;
+			} else {
+				months[dateKey] = 1;
+			}
+		}
+		{
+			// Day
+			const rawdate = dayjs(miss.date, "DD/MM/YYYY").day();
+			const date = rawdate == 0 ? 7 : rawdate; // Sunday is the last day of the week. Change my mind.
+			if (days[date]) {
+				days[date].count++;
+				// Player Status
+				for (let i = 0; i < 3; i++) {
+					days[date][labelStatus[i][0]] +=
+						miss.player_status + 1 === i + 1 ? 1 : 0;
+				}
+				// Mission Status
+				for (let i = 0; i <= 3; i++) {
+					days[date][labelStatus[i][1]] += miss.mission_status === i ? 1 : 0;
+				}
+			} else {
+				days[date] = { count: 1 };
+				// Player Status
+				for (let i = 0; i < 3; i++) {
+					days[date][labelStatus[i][0]] = miss.player_status === i ? 1 : 0;
+				}
+				// Mission Status
+				for (let i = 0; i <= 3; i++) {
+					days[date][labelStatus[i][1]] = miss.mission_status === i ? 1 : 0;
+				}
+			}
+		}
+		{
+			// Roles
+			let isMissionDone = false;
+			for (let i = 0; i < Object.values(roles).length; i++) {
+				const roleConfigKey = Object.keys(roles)[i];
+				for (const roleConfigVal of Object.values(roles)[i].map(
+					(roleConfigVal) => toLowerWOAccent(roleConfigVal)
+				)) {
+					if (toLowerWOAccent(miss.role).includes(roleConfigVal)) {
+						isMissionDone = true;
+						if (isNaN(rolesCount[roleConfigKey])) {
+							rolesCount[roleConfigKey] = 1;
+						} else {
+							rolesCount[roleConfigKey]++;
+						}
+						rolesCount.Inconnu--;
+						break;
+					}
+				}
+				if (isMissionDone) {
+					break;
+				}
+			}
+			if (!isMissionDone) {
+				rolesErrors.push({ mission: miss.id, role: miss.role });
+			}
+		}
+	}
 
-    res.status(200).json({
-        ...player.infos,
-        last_mission: player.missions[0],
-        total_player_status,
-        total_mission_status,
-        total_player_mission_status,
-        roles: {
-            roles_count: rolesCount,
-            roles_errors: rolesErrors
-        },
-        months,
-        days,
-        updated: player.updated
-    });
+	res.status(200).json({
+		...player.infos,
+		last_mission: player.missions[0],
+		total_player_status,
+		total_mission_status,
+		total_player_mission_status,
+		roles: {
+			roles_count: rolesCount,
+			roles_errors: rolesErrors,
+		},
+		months,
+		days,
+		updated: player.updated,
+	});
 });

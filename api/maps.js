@@ -1,12 +1,12 @@
-const { app } = require('../app');
-const { getAllMaps } = require('../db/maps');
+const { app } = require("../app");
+const { getAllMaps } = require("../db/maps");
 
 /**
  * @api {get} /gdc/maps Request Maps Information
  * @apiName GetMaps
  * @apiGroup Maps
  * @apiDescription Gets the informations about maps
- * 
+ *
  * @apiSuccess {JSONArray} result The maps infos
  * @apiSuccessExample Success Example
  * {
@@ -25,4 +25,4 @@ const { getAllMaps } = require('../db/maps');
  *     "updated": "2021-03-27T13:48:52.257Z"
  * }
  */
-app.get('/gdc/maps', async (req, res) => res.status(200).json(await getAllMaps()));
+app.get("/maps", async (req, res) => res.status(200).json(await getAllMaps()));
