@@ -2,7 +2,7 @@ const { app } = require("../app");
 const { getAllMaps } = require("../db/maps");
 
 /**
- * @api {get} /gdc/maps Request Maps Information
+ * @api {get} /maps Request Maps Information
  * @apiName GetMaps
  * @apiGroup Maps
  * @apiDescription Gets the informations about maps
@@ -25,4 +25,13 @@ const { getAllMaps } = require("../db/maps");
  *     "updated": "2021-03-27T13:48:52.257Z"
  * }
  */
-app.get("/maps", async (req, res) => res.status(200).json(await getAllMaps()));
+app.get("/maps", async (req, res) => {
+	try {
+		res.status(200).json(await getAllMaps());
+	} catch (error) {
+		res.status(500).json({
+			status: "error",
+			...error,
+		});
+	}
+});

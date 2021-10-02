@@ -18,7 +18,7 @@ const toLowerWOAccent = (str) =>
 		.replace(/[\u0300-\u036f]/g, "");
 
 /**
- * @api {get} /gdc/players Request Players Information
+ * @api {get} /players Request Players Information
  * @apiName GetPlayers
  * @apiGroup Players
  * @apiDescription Gets the informations about players
@@ -55,12 +55,19 @@ const toLowerWOAccent = (str) =>
  *      "updated": "2021-03-27T22:09:45.170Z"
  * }
  */
-app.get("/players", async (req, res) =>
-	res.status(200).json(await getAllPlayers())
-);
+app.get("/players", async (req, res) => {
+	try {
+		res.status(200).json(await getAllPlayers());
+	} catch (error) {
+		res.status(500).json({
+			status: "error",
+			...error,
+		});
+	}
+});
 
 /**
- * @api {get} /gdc/players/:id Request Player Information
+ * @api {get} /players/:id Request Player Information
  * @apiName GetPlayersById
  * @apiGroup Players
  * @apiDescription Gets the informations about the player
@@ -122,7 +129,15 @@ app.get("/players", async (req, res) =>
  */
 app.get("/players/:id", async (req, res) => {
 	const { id } = req.params;
-	const player = await getPlayer(id);
+	let player = {};
+	try {
+		player = await getPlayer(id);
+	} catch (error) {
+		return res.status(500).json({
+			status: "error",
+			...error,
+		});
+	}
 
 	// Gets totals
 	const total_player_status = {};

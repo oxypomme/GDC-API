@@ -1,7 +1,7 @@
 [
   {
     "type": "get",
-    "url": "/gdc/maps",
+    "url": "/maps",
     "title": "Request Maps Information",
     "name": "GetMaps",
     "group": "Maps",
@@ -63,7 +63,7 @@
   },
   {
     "type": "get",
-    "url": "/gdc/missions",
+    "url": "/missions",
     "title": "Request Missions Information",
     "name": "GetMissions",
     "group": "Missions",
@@ -94,7 +94,7 @@
   },
   {
     "type": "get",
-    "url": "/gdc/players",
+    "url": "/players",
     "title": "Request Players Information",
     "name": "GetPlayers",
     "group": "Players",
@@ -125,7 +125,7 @@
   },
   {
     "type": "get",
-    "url": "/gdc/players/:id",
+    "url": "/players/:id",
     "title": "Request Player Information",
     "name": "GetPlayersById",
     "group": "Players",

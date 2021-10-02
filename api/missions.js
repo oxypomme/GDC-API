@@ -7,7 +7,7 @@ const { getAllMissions, getMission } = require("../db/missions");
 const { getIntStatus } = require("../intstatus");
 
 /**
- * @api {get} /gdc/missions Request Missions Information
+ * @api {get} /missions Request Missions Information
  * @apiName GetMissions
  * @apiGroup Missions
  * @apiDescription Gets the informations about missions
@@ -41,7 +41,14 @@ const { getIntStatus } = require("../intstatus");
  * }
  */
 app.get("/missions", async (req, res) => {
-	res.status(200).json(await getAllMissions());
+	try {
+		res.status(200).json(await getAllMissions());
+	} catch (error) {
+		res.status(500).json({
+			status: "error",
+			...error,
+		});
+	}
 });
 
 /**
@@ -82,5 +89,12 @@ app.get("/missions", async (req, res) => {
  */
 app.get("/missions/:id", async (req, res) => {
 	const { id } = req.params;
-	res.status(200).json(await getMission(id));
+	try {
+		res.status(200).json(await getMission(id));
+	} catch (error) {
+		res.status(500).json({
+			status: "error",
+			...error,
+		});
+	}
 });
