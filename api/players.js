@@ -163,7 +163,19 @@ app.get("/players/:id", async (req, res) => {
 	const rolesCount = { Inconnu: player.missions.length };
 	const months = {};
 	const days = {};
-	for (const miss of player.missions) {
+	const streak = {
+		mort: {
+			max: 0,
+			count: 0,
+			current: false,
+		},
+		vivant: {
+			max: 0,
+			count: 0,
+			current: false,
+		},
+	};
+	for (const miss of player.missions.reverse()) {
 		{
 			// Month
 			const date = dayjs(miss.date, "DD/MM/YYYY");
@@ -228,14 +240,41 @@ app.get("/players/:id", async (req, res) => {
 				rolesErrors.push({ mission: miss.id, role: miss.role });
 			}
 		}
+		{
+			// Streak
+			if (miss.player_status === 1) {
+				if (streak.vivant.current) {
+					streak.vivant.count++;
+				} else {
+					streak.mort.current = false;
+					streak.vivant.current = true;
+					if (streak.vivant.count > streak.vivant.max) {
+						streak.vivant.max = streak.vivant.count;
+					}
+					streak.vivant.count = 1;
+				}
+			} else if (miss.player_status === 2) {
+				if (streak.mort.current) {
+					streak.mort.count++;
+				} else {
+					streak.mort.current = true;
+					streak.vivant.current = false;
+					if (streak.mort.count > streak.mort.max) {
+						streak.mort.max = streak.mort.count;
+					}
+					streak.mort.count = 1;
+				}
+			}
+		}
 	}
 
 	res.status(200).json({
 		...player.infos,
-		last_mission: player.missions[0],
+		last_mission: player.missions[player.missions.length - 1],
 		total_player_status,
 		total_mission_status,
 		total_player_mission_status,
+		streak,
 		roles: {
 			roles_count: rolesCount,
 			roles_errors: rolesErrors,
