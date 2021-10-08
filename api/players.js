@@ -175,7 +175,9 @@ app.get("/players/:id", async (req, res) => {
 			current: false,
 		},
 	};
-	for (const miss of player.missions.reverse()) {
+
+	// Using a copy of the array for side-effect reasons
+	for (const miss of [...player.missions].reverse()) {
 		{
 			// Month
 			const date = dayjs(miss.date, "DD/MM/YYYY");
@@ -270,7 +272,7 @@ app.get("/players/:id", async (req, res) => {
 
 	res.status(200).json({
 		...player.infos,
-		last_mission: player.missions[player.missions.length - 1],
+		last_mission: player.missions[0],
 		total_player_status,
 		total_mission_status,
 		total_player_mission_status,
