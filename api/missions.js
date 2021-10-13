@@ -52,7 +52,7 @@ app.get("/missions", async (req, res) => {
 });
 
 /**
- * @api {get} /gdc/missions/:id Request Mission Information
+ * @api {get} /missions/:id Request Mission Information
  * @apiName GetMissionById
  * @apiGroup Missions
  * @apiDescription Gets the informations about the mission
