@@ -1,7 +1,10 @@
 import { JSDOM } from "jsdom";
+import { readFileSync } from "fs";
 import fetch from "node-fetch";
 import dayjs from "../dayjs.js";
 import db from "./index.js";
+
+const maps = JSON.parse(readFileSync("config/maps.json", "utf8"));
 
 const fetchAllMaps = async () => {
 	const { document: doc } = new JSDOM(
@@ -17,11 +20,15 @@ const fetchAllMaps = async () => {
 		db.data.maps.data = [];
 		for (let id = 1; id < table.children.length + 1; id++) {
 			const row = table.children[id - 1];
-			db.data.maps.data.push({
-				id,
-				name: row.children[0].innerHTML,
-				mission_count: parseInt(row.children[1].innerHTML),
-			});
+			const name = row.children[0].innerHTML;
+			// Check map name in whitelist
+			if (maps.find((m) => m === name)) {
+				db.data.maps.data.push({
+					id,
+					name,
+					mission_count: parseInt(row.children[1].innerHTML),
+				});
+			}
 		}
 	}
 

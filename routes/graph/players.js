@@ -2,7 +2,7 @@ import { Router } from "express";
 import { readFileSync } from "fs";
 import dayjs from "../../dayjs.js";
 
-import { getAllPlayers, getPlayer } from "../../db/players.js";
+import { getPlayer } from "../../db/players.js";
 import { labelStatus } from "../../intstatus.js";
 
 const roles = JSON.parse(readFileSync("config/roles.json", "utf8"));
