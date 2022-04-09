@@ -23,7 +23,7 @@ const fetchAllMissions = async () => {
 				db.data.missions.data = [];
 			}
 			for (const row of table.children) {
-				if (row.children[5].innerHTML !== "@EFFACER") {
+				if (!row.children[5].innerHTML.startsWith("@")) {
 					db.data.missions.data.push({
 						id: +row.children[0].innerHTML,
 						name: row.children[1].children[0].innerHTML,
