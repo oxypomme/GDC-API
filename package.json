@@ -5,7 +5,7 @@
 	"type": "module",
 	"apidoc": {
 		"name": "GDCAPI",
-		"url": "https://oxypomme.fr/gdc",
+		"url": "https://gdc.oxypomme.fr",
 		"template": {
 			"withCompare": false
 		}
