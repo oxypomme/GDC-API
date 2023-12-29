@@ -29,6 +29,7 @@ const toLowerWOAccent = (str) =>
  *     "name": "OxyTom",
  *     "formation": "",
  *     "count_missions": 24,
+ * 		 "count_cache_missions": 12,
  *     "first_mission": { SEE /api/missions },
  *     "last_mission": { SEE /api/missions },
  *     "total_player_status": {
@@ -128,8 +129,14 @@ router.get("/:id", async (req, res) => {
 		},
 	};
 
+	let cache_count = 0;
 	// Using a copy of the array for side-effect reasons
 	for (const miss of [...player.missions].reverse()) {
+		// Check if cache cash
+		if (/cache_cash/i.test(miss.name)) {
+			cache_count += 1;
+		}
+
 		{
 			// Month
 			const date = dayjs(miss.date);
@@ -224,6 +231,7 @@ router.get("/:id", async (req, res) => {
 
 	res.status(200).json({
 		...player.infos,
+		count_cache_missions: cache_count,
 		first_mission: player.missions[player.missions.length - 1],
 		last_mission: player.missions[0],
 		total_player_status,
