@@ -1,19 +1,19 @@
 {
 	"name": "gdc-api",
-	"version": "2.0.5",
+	"version": "3.0.0",
 	"description": "An API for www.grecedecanards.fr",
+	"type": "module",
 	"apidoc": {
 		"name": "GDCAPI",
-		"url": "https://oxypomme.fr/gdc",
+		"url": "https://gdc.oxypomme.fr",
 		"template": {
 			"withCompare": false
 		}
 	},
-	"main": "index.js",
 	"scripts": {
-		"start": "node index.js",
-		"start:dev": "nodemon",
-		"gendoc": "apidoc -i api/"
+		"start": "node app.js",
+		"dev": "nodemon",
+		"gendoc": "apidoc -i routes/"
 	},
 	"repository": {
 		"type": "git",
@@ -30,13 +30,16 @@
 	"homepage": "https://github.com/oxypomme/GDC-API#readme",
 	"dependencies": {
 		"cors": "^2.8.5",
-		"dayjs": "^1.10.4",
-		"express": "^4.17.1",
-		"jsdom": "^16.5.1",
+		"dayjs": "^1.11.10",
+		"express": "^4.18.2",
+		"jsdom": "^23.0.1",
+		"lowdb": "^7.0.1",
 		"mysql": "^2.18.1",
-		"node-fetch": "^2.6.1"
+		"node-fetch": "^3.3.2"
 	},
 	"devDependencies": {
-		"nodemon": "^2.0.7"
+		"@types/node-fetch": "^3.0.3",
+		"apidoc": "^1.2.0",
+		"nodemon": "^3.0.2"
 	}
 }

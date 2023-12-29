@@ -1,14 +1,13 @@
-const { app } = require("../app");
-const dayjs = require("dayjs");
-const customParseFormat = require("dayjs/plugin/customParseFormat");
-require("dayjs/locale/fr");
-dayjs.extend(customParseFormat);
-dayjs.locale("fr");
+import { Router } from "express";
+import { readFileSync } from "fs";
+import dayjs from "../../dayjs.js";
 
-const roles = require("../config/roles");
+import { getPlayer } from "../../db/players.js";
+import { labelStatus } from "../../intstatus.js";
 
-const { getAllPlayers, getPlayer } = require("../db/players");
-const { labelStatus } = require("../intstatus");
+const roles = JSON.parse(readFileSync("config/roles.json", "utf8"));
+
+const router = Router();
 
 const toLowerWOAccent = (str) =>
 	str
@@ -18,69 +17,21 @@ const toLowerWOAccent = (str) =>
 		.replace(/[\u0300-\u036f]/g, "");
 
 /**
- * @api {get} /players Request Players Information
- * @apiName GetPlayers
+ * @api {get} /graph/players/:id Request Player Stats
+ * @apiName GetPlayersStatsById
  * @apiGroup Players
- * @apiDescription Gets the informations about players
- *
- * @apiSuccess {JSONArray} result The players infos
- * @apiSuccessExample Success Example
- * {
- *      [
- *          {
- *              "id": 1,
- *              "name": "Mystery",
- *              "creation_date": "08/10/2016",
- *              "formation": "La Vieille",
- *              "count_missions": 588,
- *              "last_mission": "19/03/2021"
- *          },
- *          {
- *              "id": 2,
- *              "name": "CP Dranac",
- *              "creation_date": "08/10/2016",
- *              "formation": "Canard",
- *              "count_missions": 486,
- *              "last_mission": "06/12/2020"
- *          },
- *          {
- *              "id": 3,
- *              "name": "Goyahka",
- *              "creation_date": "08/10/2016",
- *              "formation": "Canard",
- *              "count_missions": 351,
- *              "last_mission": "12/03/2021"
- *          }
- *      ],
- *      "updated": "2021-03-27T22:09:45.170Z"
- * }
- */
-app.get("/players", async (req, res) => {
-	try {
-		res.status(200).json(await getAllPlayers());
-	} catch (error) {
-		res.status(500).json({
-			status: "error",
-			...error,
-		});
-	}
-});
-
-/**
- * @api {get} /players/:id Request Player Information
- * @apiName GetPlayersById
- * @apiGroup Players
- * @apiDescription Gets the informations about the player
+ * @apiDescription Gets the prepared stats about the player. Usefull for graphs.
  *
  * @apiSuccess {JSONObject} result The player infos and missions
  * @apiSuccessExample Success Example
  * {
  *     "id": 292,
  *     "name": "OxyTom",
- *     "creation_date": "13/02/2021",
  *     "formation": "",
  *     "count_missions": 24,
- *     "last_mission": { SEE /gdc/missions },
+ * 		 "count_cache_missions": 12,
+ *     "first_mission": { SEE /api/missions },
+ *     "last_mission": { SEE /api/missions },
  *     "total_player_status": {
  *         "Vivant": 9,
  *         "Mort": 14
@@ -124,10 +75,11 @@ app.get("/players", async (req, res) => {
  *             "PVP": 0
  *         }
  *     },
- *     "updated": "2021-03-27T22:09:45.170Z"
+ *     "updated": "2021-03-27T22:09:45.170Z",
+ *     "updated": "2021-03-27T23:09:45.170Z"
  * }
  */
-app.get("/players/:id", async (req, res) => {
+router.get("/:id", async (req, res) => {
 	const { id } = req.params;
 	let player = {};
 	try {
@@ -135,7 +87,8 @@ app.get("/players/:id", async (req, res) => {
 	} catch (error) {
 		return res.status(500).json({
 			status: "error",
-			...error,
+			url: req.originalUrl,
+			error: error.message,
 		});
 	}
 
@@ -176,11 +129,17 @@ app.get("/players/:id", async (req, res) => {
 		},
 	};
 
+	let cache_count = 0;
 	// Using a copy of the array for side-effect reasons
-	for (const miss of [...player.missions].reverse()) {
+	for (const miss of player.missions.toReversed()) {
+		// Check if cache cash
+		if (/cache_cash/i.test(miss.name)) {
+			cache_count += 1;
+		}
+
 		{
 			// Month
-			const date = dayjs(miss.date, "DD/MM/YYYY");
+			const date = dayjs(miss.date);
 			const dateKey = date.format("MMM YYYY");
 			if (months[dateKey]) {
 				months[dateKey]++;
@@ -190,7 +149,7 @@ app.get("/players/:id", async (req, res) => {
 		}
 		{
 			// Day
-			const rawdate = dayjs(miss.date, "DD/MM/YYYY").day();
+			const rawdate = dayjs(miss.date).day();
 			const date = rawdate == 0 ? 7 : rawdate; // Sunday is the last day of the week. Change my mind.
 			if (days[date]) {
 				days[date].count++;
@@ -272,6 +231,8 @@ app.get("/players/:id", async (req, res) => {
 
 	res.status(200).json({
 		...player.infos,
+		count_cache_missions: cache_count,
+		first_mission: player.missions[player.missions.length - 1],
 		last_mission: player.missions[0],
 		total_player_status,
 		total_mission_status,
@@ -284,5 +245,8 @@ app.get("/players/:id", async (req, res) => {
 		months,
 		days,
 		updated: player.updated,
+		expires: player.expires,
 	});
 });
+
+export default router;

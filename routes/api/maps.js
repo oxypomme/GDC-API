@@ -1,8 +1,10 @@
-const { app } = require("../app");
-const { getAllMaps } = require("../db/maps");
+import { Router } from "express";
+import { getAllMaps } from "../../db/maps.js";
+
+const router = Router();
 
 /**
- * @api {get} /maps Request Maps Information
+ * @api {get} /api/maps Request Maps Information
  * @apiName GetMaps
  * @apiGroup Maps
  * @apiDescription Gets the informations about maps
@@ -10,7 +12,8 @@ const { getAllMaps } = require("../db/maps");
  * @apiSuccess {JSONArray} result The maps infos
  * @apiSuccessExample Success Example
  * {
- *     "maps": [
+ *     "count": 2,
+ *     "data": [
  *         {
  *             "id": 1,
  *             "name": "Aliabad Region",
@@ -22,16 +25,24 @@ const { getAllMaps } = require("../db/maps");
  *             "mission_count": 112
  *         }
  *     ],
- *     "updated": "2021-03-27T13:48:52.257Z"
+ *     "updated": "2021-03-27T13:48:52.257Z",
+ *     "expires": "2021-03-27T14:48:52.257Z"
  * }
  */
-app.get("/maps", async (req, res) => {
+router.get("/", async (req, res) => {
 	try {
-		res.status(200).json(await getAllMaps());
+		const maps = await getAllMaps();
+		res.status(200).json({
+			count: maps.data.length,
+			...maps,
+		});
 	} catch (error) {
 		res.status(500).json({
 			status: "error",
-			...error,
+			url: req.originalUrl,
+			error: error.message,
 		});
 	}
 });
+
+export default router;
