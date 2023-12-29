@@ -1,20 +1,10 @@
 import { join, dirname } from "path";
-import { Low, JSONFile } from "lowdb";
+import { JSONFilePreset } from "lowdb/node";
 import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// Use JSON file for storage
-const file = join(__dirname, "data", "db.json");
-const adapter = new JSONFile(file);
-const db = new Low(adapter);
-
-// Read data from JSON file, this will set db.data content
-await db.read();
-
-// If file.json doesn't exist, db.data will be null
-// Set default data
-db.data = db.data || {
+const defaultData = {
 	maps: { data: [] },
 	missions: { data: [] },
 	players: { data: [] },
@@ -22,7 +12,14 @@ db.data = db.data || {
 		missions: {},
 		players: {},
 	},
-};
+}
+
+// Use JSON file for storage
+const file = join(__dirname, "data", "db.json");
+const db = await JSONFilePreset(file, defaultData);
+
+// Read data from JSON file, this will set db.data content
+await db.read();
 
 // Write db.data content to db.json
 await db.write();

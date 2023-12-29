@@ -131,7 +131,7 @@ router.get("/:id", async (req, res) => {
 
 	let cache_count = 0;
 	// Using a copy of the array for side-effect reasons
-	for (const miss of [...player.missions].reverse()) {
+	for (const miss of player.missions.toReversed()) {
 		// Check if cache cash
 		if (/cache_cash/i.test(miss.name)) {
 			cache_count += 1;
